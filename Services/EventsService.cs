@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Events.DBConnection;
 using Events.Models;
 using Events.Requests;
+using Events.Responses;
 using Events.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,17 +32,47 @@ namespace Events.Services
             return "Event removed successfully";
         }
 
-        public async Task<List<Event>> GetEventsAsync(string? location)
+        public async Task<List<EventList>> GetEventsAsync(string? location)
         {
+            // if(string.IsNullOrWhiteSpace(location) || string.IsNullOrEmpty(location)){
+
+            //    return await _context.Events.ToListAsync();
+            // }
+            // return await _context.Events.Where(u => u.Location == location).ToListAsync();
+
+
             if(string.IsNullOrEmpty(location) || string.IsNullOrEmpty(location)){
-                return await _context.Events.ToListAsync();
+                return await _context.Events.Select(i => new EventList(){
+                Id = i.EventId,
+                Name = i.Name,
+                Attendees = i.Users.Select(c => new Attendees(){
+                    Name = c.Name,
+                    Email =c.Email,
+                    Phone = c.PhoneNumber,
+                }).ToList()
+            }).ToListAsync();
             }
-           return await _context.Events.Where(u=>u.Location.ToLower() == location.ToLower()).ToListAsync();
+            return await _context.Events.Where(u => u.Location == location).Select(i => new EventList(){
+                Name = i.Name,
+                Attendees = i.Users.Select(c => new Attendees(){
+                    Name = c.Name,
+                    Email =c.Email,
+                    Phone = c.PhoneNumber,
+                }).ToList()
+            }).ToListAsync();
         }
 
         public async Task<Event> GetOneEventAsync(Guid Id)
         {
             return await _context.Events.Where(u=>u.EventId == Id).FirstOrDefaultAsync();
+        }
+
+        public async Task<string> GetRemainingSlotsAsync(Guid Id)
+        {
+             var events = await _context.Events.Where(u=>u.EventId == Id).FirstOrDefaultAsync();
+             var totalBooking = events.Users.Count;
+             var availableslots = events.Capacity - totalBooking;
+            return $"{availableslots} available slots";
         }
 
         public async Task<string> UpdateEventAsync(Event newEvent)

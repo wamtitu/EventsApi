@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Events.Models
+namespace Events.Requests
 {
-    public class EventUser
+    public class AddToEventList
     {
-        public Guid EventUserId { get; set; }
-        public Event Event { get; set; }
         public Guid EventID { get; set; }
-        public User User { get; set; }
         public Guid UserId { get; set; }
     }
 }

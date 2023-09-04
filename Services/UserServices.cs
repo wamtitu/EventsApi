@@ -45,5 +45,28 @@ namespace Events.Services
             await _context.SaveChangesAsync();
             return "user updated successfully";
         }
+
+        public async Task<string> BookAnEventAsync(Guid UserId, Guid EventId)
+        {
+            var user = await _context.Users.Where(x => x.UserId == UserId).FirstOrDefaultAsync();
+            var events = await _context.Events.Where(x => x.EventId == EventId).FirstOrDefaultAsync();
+            if (events == null)
+            {
+                return "Event not found";
+            }
+            if (user == null )
+            {
+                return "User not found";
+            }
+            events.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return "Event booked successfully";
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+           return await _context.Users.Where(u=>u.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
+           
+        }
     }
 }

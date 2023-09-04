@@ -22,12 +22,12 @@ namespace Events.Controllers
             _imapper = imapper;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<string>> Adduser(CreateUser newUser){
-            var user = _imapper.Map<User>(newUser);
-            var res = await _userService.CreateUsersAsync(user);
-            return CreatedAtAction(nameof(Adduser),  res);
-        }
+        // [HttpPost]
+        // public async Task<ActionResult<string>> Adduser(CreateUser newUser){
+        //     var user = _imapper.Map<User>(newUser);
+        //     var res = await _userService.CreateUsersAsync(user);
+        //     return CreatedAtAction(nameof(Adduser),  res);
+        // }
 
         [HttpGet]
         public async Task<ActionResult<string>> GetUsers(){
@@ -63,6 +63,14 @@ namespace Events.Controllers
             }
             var res = await _userService.DeleteUserAsync(response);
             return Ok(res);
+        }
+
+        [HttpPost("bookevent")]
+         public async Task<ActionResult<string>> BookEvent(BookEvent newBooking)
+        {
+                var response = await _userService.BookAnEventAsync(newBooking.UserId, newBooking.EventId);
+                return Ok(response);
+            
         }
     }
 }

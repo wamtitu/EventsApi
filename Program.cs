@@ -1,13 +1,62 @@
+using System.Text;
 using Events.DBConnection;
 using Events.Services;
 using Events.Services.IServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 //adding DBconnection
 builder.Services.AddDbContext<ApiDbConnection>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("localConnection"));
+});
+
+//registering the jwt services
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options=>{
+        options.TokenValidationParameters = new TokenValidationParameters{
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime= true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+
+        };
+    });
+
+//enabling swagger jwt extension
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Provide a Valid Token",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+ 
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference= new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id=JwtBearerDefaults.AuthenticationScheme
+                }
+            }, new string[]{}
+
+        }
+    });
 });
 
 //initializing the dependency injction

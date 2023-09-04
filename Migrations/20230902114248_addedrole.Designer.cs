@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Events.Migrations
 {
     [DbContext(typeof(ApiDbConnection))]
-    [Migration("20230901232510_EventsUserTable")]
-    partial class EventsUserTable
+    [Migration("20230902114248_addedrole")]
+    partial class addedrole
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,27 +72,6 @@ namespace Events.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("Events.Models.EventUser", b =>
-                {
-                    b.Property<Guid>("EventUserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("EventID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("EventUserId");
-
-                    b.HasIndex("EventID");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("EventUsers");
-                });
-
             modelBuilder.Entity("Events.Models.User", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -108,6 +87,10 @@ namespace Events.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -129,25 +112,6 @@ namespace Events.Migrations
                         .HasForeignKey("UsersUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Events.Models.EventUser", b =>
-                {
-                    b.HasOne("Events.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Events.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

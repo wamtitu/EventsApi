@@ -76,3 +76,5 @@ C:\Users\lenovo\desktop\.NET\Events\obj\Debug\net7.0\refint\Events.dll
 C:\Users\lenovo\desktop\.NET\Events\obj\Debug\net7.0\Events.pdb
 C:\Users\lenovo\desktop\.NET\Events\obj\Debug\net7.0\Events.genruntimeconfig.cache
 C:\Users\lenovo\desktop\.NET\Events\obj\Debug\net7.0\ref\Events.dll
+C:\Users\lenovo\desktop\.NET\Events\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\lenovo\desktop\.NET\Events\bin\Debug\net7.0\BCrypt.Net-Next.dll

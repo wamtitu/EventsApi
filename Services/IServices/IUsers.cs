@@ -13,6 +13,8 @@ namespace Events.Services.IServices
         Task<List<User>> GetUsersAsync();
         Task<User> GetOneUserAsync(Guid Id);
         Task<string> UpdateUserAsync(User newUser);
-        // Task<List<User>> GetAllUsersInAnEvent(Guid id);
+        Task<string> BookAnEventAsync(Guid UserId, Guid EventId);
+
+        Task<User> GetUserByEmail(string email);
     }
 }
